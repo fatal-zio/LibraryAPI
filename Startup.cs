@@ -1,10 +1,12 @@
-﻿using LibraryAPI.Entities;
+﻿using System.Threading.Channels;
+using LibraryAPI.Entities;
 using LibraryAPI.Entities.Extensions;
 using LibraryAPI.Helpers;
 using LibraryAPI.Models;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,7 +39,13 @@ namespace LibraryAPI
             }
             else
             {
-                app.UseExceptionHandler();
+                app.UseExceptionHandler(appBuilder =>
+                {
+                    appBuilder.Run(async context => 
+                        { context.Response.StatusCode = 500;
+                            await context.Response.WriteAsync("An unexpected error occurred. Try again later.");
+                        });
+                });
             }
 
             AutoMapper.Mapper.Initialize(cfg =>
@@ -45,6 +53,8 @@ namespace LibraryAPI
                 cfg.CreateMap<Author, AuthorDto>()
                     .ForMember(dest => dest.Name, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                     .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.GetCurrentAge()));
+
+                cfg.CreateMap<Book, BookDto>();
             });
 
             libraryContext.EnsureSeedDataForContext();
