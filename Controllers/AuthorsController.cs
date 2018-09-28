@@ -1,5 +1,8 @@
-﻿using LibraryAPI.Services;
+﻿using LibraryAPI.Models;
+using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using AutoMapper;
 
 namespace LibraryAPI.Controllers
 {
@@ -13,16 +16,12 @@ namespace LibraryAPI.Controllers
             _libraryRepository = libraryRepository;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [HttpGet]
         public IActionResult GetAuthors()
         {
             var authorsFromRepo = _libraryRepository.GetAuthors();
-            return new JsonResult(authorsFromRepo);
+
+            return new JsonResult(Mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo));
         }
     }
 }

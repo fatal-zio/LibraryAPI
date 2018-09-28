@@ -1,5 +1,7 @@
 ﻿using LibraryAPI.Entities;
 using LibraryAPI.Entities.Extensions;
+using LibraryAPI.Helpers;
+using LibraryAPI.Models;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,6 +39,13 @@ namespace LibraryAPI
             {
                 app.UseExceptionHandler();
             }
+
+            AutoMapper.Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Author, AuthorDto>()
+                    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
+                    .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.GetCurrentAge()));
+            });
 
             libraryContext.EnsureSeedDataForContext();
 
