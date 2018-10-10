@@ -1,5 +1,4 @@
-﻿using System.Threading.Channels;
-using LibraryAPI.Entities;
+﻿using LibraryAPI.Entities;
 using LibraryAPI.Entities.Extensions;
 using LibraryAPI.Helpers;
 using LibraryAPI.Models;
@@ -53,7 +52,8 @@ namespace LibraryAPI
                 cfg.CreateMap<Author, AuthorDto>()
                     .ForMember(dest => dest.Name, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                     .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.GetCurrentAge()));
-
+                cfg.CreateMap<AuthorForCreationDto, Author>();
+                cfg.CreateMap<BookForCreationDto, Book>();
                 cfg.CreateMap<Book, BookDto>();
             });
 
