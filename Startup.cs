@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,10 +15,7 @@ namespace LibraryAPI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -26,7 +24,12 @@ namespace LibraryAPI
         {
             services.AddTransient<LibraryContext>()
                     .AddScoped<ILibraryRepository, LibraryRepository>()
-                    .AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                    .AddMvc(options =>
+                    {
+                        options.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
+                        options.InputFormatters.Add(new XmlDataContractSerializerInputFormatter(options));
+                    })
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
