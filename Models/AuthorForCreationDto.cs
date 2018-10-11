@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Security.Policy;
+using System.Collections.Generic;
 
 namespace LibraryAPI.Models
 {
@@ -9,5 +9,6 @@ namespace LibraryAPI.Models
         public string LastName { get; set; }
         public DateTimeOffset DateOfBirth { get; set; }
         public string Genre { get; set; }
+        public ICollection<BookForCreationDto> Books { get; set; } = new List<BookForCreationDto>();
     }
 }
